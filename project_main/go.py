@@ -1,16 +1,15 @@
 import pygame
 from get_size import GetScreenSize
 
-x_s, y_s = GetScreenSize()
 clock = pygame.time.Clock()
 clicked = False
 pos1 = None
 pos2 = None
 
 def go(velx, vely, position, ball, Ball):
-    from draw import screen
-    from init_img import bg_image, LEVEL
-    global x_s, y_s
+    from draw import screen, main_screen
+    from init_img import bg_img, BALL, LEVEL
+    x_s, y_s = GetScreenSize()
     x_vel = 1
     y_vel = 1
     number = 0.6
@@ -22,7 +21,7 @@ def go(velx, vely, position, ball, Ball):
         y_vel = round(vely * number, 2)
         position[0] = round(position[0] + round((x_vel * number) / 5, 3), 1)
         position[1] = round(position[1] + round((y_vel * number) / 5, 3), 1)
-        
+
         if position[0] <= 0 or position[0] >= x_s:
             if outside_x == True:
                 if position[0] > 0 or position[0] < x_s:
@@ -48,9 +47,15 @@ def go(velx, vely, position, ball, Ball):
         number = number - 0.01
         number = round(number,2)
 
-        screen.blit(bg_image, (0,0))
-        LEVEL.update()
+        screen.blit(bg_img, (0,0))
+        BALL.update()
+        # pause button
+        # score
+        # boxes
+        # hole
+        BALL.draw(screen)
         LEVEL.draw(screen)
+        main_screen.blit(pygame.transform.scale(screen, main_screen.get_rect().size), (0, 0))
         pygame.display.flip()
 
 def clicked_func(ball, Ball):
