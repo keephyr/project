@@ -1,6 +1,6 @@
 import pygame
 
-def ChangeAction(action, btn_class, level = None):
+def ChangeAction(action, btn_class, level = None, resize = False):
     if action == "Start":
 
         if btn_class == "start":
@@ -24,6 +24,9 @@ def ChangeAction(action, btn_class, level = None):
 
         if btn_class == "back":
             action = "Start"
+        elif btn_class == "apply":
+            action = "settings"
+            resize = True
 
     elif action == "level":
         if btn_class == "pause":
@@ -38,6 +41,6 @@ def ChangeAction(action, btn_class, level = None):
         elif btn_class == "exit":
             action = "Start"
     if level == None:
-         return level, action
+         return level, action, resize
     elif level != None:
-         return level_num, action
+         return level_num, action, resize

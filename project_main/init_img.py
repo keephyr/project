@@ -6,7 +6,7 @@ import go
 import change_action
 
 x_s, y_s = GetScreenSize()
-print(x_s)
+
 class Background(pygame.sprite.Sprite):
     def __init__(self, image):
         super().__init__()
@@ -40,7 +40,7 @@ class Widget(pygame.sprite.Sprite):
         self.rect.center = position
         self.position = position
 
-    def draw_clicked(self,action, clicked):
+    def draw_clicked(self,action, clicked, resize = False):
         pos = pygame.mouse.get_pos()
         if self.rect.collidepoint(pos):
             if pygame.mouse.get_pressed()[0] == True and clicked == False:
@@ -61,9 +61,9 @@ class Widget(pygame.sprite.Sprite):
                         img_dir = level_btn_dir + self.img_class + "_notclicked.png"
                     img_notclicked = pygame.image.load(img_dir)
                     self.image = pygame.transform.scale(img_notclicked, self.new_size)
-                self.level_num, action = change_action.ChangeAction(action, self.img_class, self.level_num)
+                self.level_num, action, resize = change_action.ChangeAction(action, self.img_class, self.level_num)
 
-        return self.level_num, action, clicked
+        return self.level_num, action, clicked, resize
     
     def move(self):
         go.clicked_func(self, Widget)
@@ -138,8 +138,12 @@ res_img = pygame.image.load(text_dir + "resolution.png")
 
 res = Widget(res_img, ((x_s/4),((y_s/10) * 3)), .6, "res_select", "name")
 
+apply_img = pygame.image.load(buttons_dir + "apply_notclicked.png")
+
+apply = Widget(apply_img, ((x_s/2),((y_s/10) * 8)), .3, "main", "apply")
+
 SETTINGS = pygame.sprite.Group()
-SETTINGS.add(res, back_btn)
+SETTINGS.add(res, back_btn, apply)
 
 resume_btn_img = pygame.image.load(buttons_dir + "res_notclicked.png")
 resume_btn = Widget(resume_btn_img, ((x_s/2),(y_s/20) * 8), .4, "main", "res")
@@ -156,6 +160,28 @@ PAUSE.add(resume_btn, set_btn, exit_btn, pause)
 # for variable in dictionary.items():
 #     print(variable[1])
 #     variable[1].replace()
+from pygame_widgets.slider import Slider
+from pygame_widgets.textbox import TextBox    
+def init_pygame_widget(screen, scale, slider = None, textBox = None):
+    global x_s, y_s, Slider, TextBox
+
+    slider = Slider(screen, int(x_s/2.3),int(((y_s/10) * 2.7)),400,50, min=10, max=100, step=10, initial=100, colour=(242, 196, 116), handleColour=(46, 45, 6))
+    textBox = TextBox(screen, int(x_s/1.3),int(((y_s/10) * 2.7)),200,50, fontSize=40, radius = 5, colour=(242, 196, 116), textColour=(46, 45, 6))
+    textBox.disable()
+    # slider = Slider(screen, 20,10,400,50)
+    print(slider._y)
     
 
+    return slider, textBox
 
+def text_ScreenSize(textBox, slider):
+    screen_x, screen_y = GetScreenSize()
+
+    Value = slider.getValue()
+    Value = (Value / 100)
+
+    screen_size = (str(int(screen_x * Value)) + " x " + str(int(screen_y * Value)))
+
+    textBox.setText(screen_size)
+
+    return Value
