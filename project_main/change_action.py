@@ -16,9 +16,8 @@ def ChangeAction(action, btn_class, level = None, resize = False):
 
         if btn_class == "back":
             action = "Start"
-        elif level != None:
+        elif btn_class[0] == "N":
             action = "level"
-            level_num = level
 
     elif action == "settings":
 
@@ -40,7 +39,12 @@ def ChangeAction(action, btn_class, level = None, resize = False):
             action = "settings"
         elif btn_class == "exit":
             action = "Start"
-    if level == None:
-         return level, action, resize
-    elif level != None:
-         return level_num, action, resize
+
+    elif action == "next_level":
+        if btn_class == "pause":
+            action = "pause"
+        elif btn_class == "next":
+            level += 1
+            action = "level" 
+        
+    return level, action, resize

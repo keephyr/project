@@ -8,11 +8,12 @@ pos2 = None
 
 def go(velx, vely, position, ball, Ball):
     from draw import screen, main_screen
-    from init_img import bg_img, BALL, LEVEL
+    from init_img import bg_img, BALL, LEVEL, HOLE, INACTIVE
     x_s, y_s = GetScreenSize()
     x_vel = 1
     y_vel = 1
     number = 0.6
+    goal = False
     outside_x = False
     outside_y = False
     while x_vel != 0 and y_vel != 0:
@@ -46,30 +47,47 @@ def go(velx, vely, position, ball, Ball):
         ball.rect.center = position
         number = number - 0.01
         number = round(number,2)
-
+        
+        hit_list = pygame.sprite.spritecollide(ball, HOLE, False)
+        for hit in hit_list:
+            goal = True
+        if goal == True:
+            ball.rect.center = (-50,0)
+            screen.blit(bg_img, (0,0))
+            BALL.update()
+            BALL.draw(screen)
+            INACTIVE.draw(screen)
+            # main_screen.blit(pygame.transform.scale(screen, main_screen.get_rect().size), (0, 0))
+            pygame.display.flip()
+            break
         screen.blit(bg_img, (0,0))
         BALL.update()
         # pause button
         # score
         # boxes
-        # hole
+        HOLE.draw(screen)
         BALL.draw(screen)
-        LEVEL.draw(screen)
+        INACTIVE.draw(screen)
+        # LEVEL.draw(screen)
         main_screen.blit(pygame.transform.scale(screen, main_screen.get_rect().size), (0, 0))
         pygame.display.flip()
+    return goal
 
 def clicked_func(ball, Ball):
     global clicked, pos1, pos2
     if pygame.mouse.get_pressed()[0] == True and clicked == False:
         clicked = True
         pos1 = pygame.mouse.get_pos()
+        return False
     elif pygame.mouse.get_pressed()[0] == False and clicked == True:
         clicked = False
         pos2 = pygame.mouse.get_pos()
-        vel(pos1, pos2, ball, Ball)
+        goal = vel(pos1, pos2, ball, Ball)
+        return goal
 
 def vel(pos1, pos2, ball, Ball):
     velx = pos1[0] - pos2[0]
     vely = pos1[1] - pos2[1]
     position = list(ball.rect.center)
-    go(velx, vely, position,ball, Ball)
+    goal = go(velx, vely, position,ball, Ball)
+    return goal

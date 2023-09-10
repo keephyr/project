@@ -9,25 +9,21 @@ import resize_img
 
 pygame.init()
 event = Event()
-main_screen = pygame.display.set_mode((0,0))
+main_screen = pygame.display.set_mode((960,540))
 screen = main_screen.copy()
-slider, textBox = ii.init_pygame_widget(main_screen, 1)
-Widgets = (slider, textBox)
 resize = True
 scale = 1
+level_num = None
 screen_x, screen_y = GetScreenSize()
 pygame.display.set_caption("Golf")
+clock = pygame.time.Clock()
 def Draw(action, clicked, run, event):
-    global level, resize, main_screen, screen, slider, textBox, scale, screen_x, screen_y, Widgets
+    global resize, main_screen, screen, scale, screen_x, screen_y, clock, level_num
     if resize == True:
         x_s = screen_x * scale
         y_s = screen_y * scale
         screen = pygame.display.set_mode((x_s, y_s))
         importlib.reload(ii)
-        importlib.reload(pygame_widgets)
-        slider, textBox = resize_img.resize(scale, Widgets, x_s, y_s)
-        # print(slider.set())
-        # slider, textBox = ii.init_pygame_widget(main_screen, scale, slider, textBox)
         resize = False
     if action == "Start":
         screen.blit(ii.bg_img, (0,0))
@@ -37,18 +33,20 @@ def Draw(action, clicked, run, event):
             if action != "Start":
                 break
             else:
-                level, action, clicked, resize = button.draw_clicked(action, clicked)
+                level, action, clicked, resize = button.draw_clicked(action, clicked, level_num)
+        if level != None:
+            level_num = level                
     elif action == "settings":
         screen.blit(ii.bg_img, (0,0))
         ii.BG.draw(screen)
         ii.SETTINGS.draw(screen)
-        scale = ii.text_ScreenSize(textBox, slider)
-        pygame_widgets.update(event)
         for button in ii.SETTINGS:
             if action != "settings":
                 break
             else:
-                level, action, clicked, resize = button.draw_clicked(action, clicked)
+                level, action, clicked, resize = button.draw_clicked(action, clicked, level_num)
+        if level != None:
+            level_num = level                
     elif action == "lvl_select":
         screen.blit(ii.bg_img, (0,0))
         ii.BG.draw(screen)
@@ -57,18 +55,38 @@ def Draw(action, clicked, run, event):
             if action != "lvl_select":
                 break
             else:
-                level, action, clicked, resize = button.draw_clicked(action, clicked)
+                level, action, clicked, resize = button.draw_clicked(action, clicked, level_num)
+        if level != None:
+            level_num = level                
     elif action == "level":
         screen.blit(ii.bg_img, (0,0))
         ii.LEVEL.draw(screen)
+        num = 0
         for img in ii.LEVEL:
             if action != "level":
                 break
             else:
                 if img.img_class == "ball":
-                    img.move()
+                    goal = img.move()
+                    if goal == True:
+                        while num < 20:
+                            clock.tick(20)
+                            screen.blit(ii.bg_img, (0,0))
+                            anim_image = pygame.image.load(ii.goal_frames + f"pixil-frame-{num}.png")
+                            anim_image = ii.Widget(anim_image, ((ii.x_s/2), (ii.y_s/6)), .4 * ii.scale, "level", "hole")
+                            ii.INACTIVE.draw(screen)
+                            ii.ANIM_FRAMES.add(anim_image)
+                            ii.ANIM_FRAMES.draw(screen)
+                            num = num + 1
+                            anim_image = {}
+                            pygame.display.flip()
+                        clock.tick(60)
+                        action = "next_level"
+                        
                 else:
-                    level, action, clicked, resize = img.draw_clicked(action, clicked)
+                    level, action, clicked, resize = img.draw_clicked(action, clicked, level_num)
+        if level != None:
+            level_num = level                    
     elif action == "pause":
         screen.blit(ii.bg_img, (0,0))
         ii.BG.draw(screen)
@@ -77,7 +95,20 @@ def Draw(action, clicked, run, event):
             if action != "pause":
                 break
             else:
-                level, action, clicked, resize = button.draw_clicked(action, clicked)
+                level, action, clicked, resize = button.draw_clicked(action, clicked, level_num)
+        if level != None:
+            level_num = level
+    elif action == "next_level":
+        screen.blit(ii.bg_img, (0,0))
+        ii.LEVEL.draw(screen)
+        ii.LEVEL_BUTTONS.draw(screen)
+        for button in ii.LEVEL_BUTTONS:
+            if action != "next_level":
+                break
+            else:
+                level, action, clicked, resize = button.draw_clicked(action, clicked, level_num)
+        if level != None:
+            level_num = level
     elif action == "exit":
         run = False
     else:

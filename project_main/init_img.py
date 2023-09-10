@@ -6,7 +6,8 @@ import go
 import change_action
 
 x_s, y_s = GetScreenSize()
-
+scale = x_s / 1920
+print(scale)
 class Background(pygame.sprite.Sprite):
     def __init__(self, image):
         super().__init__()
@@ -32,7 +33,7 @@ class Widget(pygame.sprite.Sprite):
         self.new_size = (size[2] * scale, size[3] * scale)
         self.size = self.new_size
         self.image = pygame.transform.scale(image, self.new_size)
-        if self.img_class == "ball":
+        if self.img_class == "ball" or self.img_class == "hole":
             self.image.set_colorkey([186,186,186])
         else:
             pass
@@ -40,7 +41,8 @@ class Widget(pygame.sprite.Sprite):
         self.rect.center = position
         self.position = position
 
-    def draw_clicked(self,action, clicked, resize = False):
+    def draw_clicked(self,action, clicked,level_num = None, resize = False):
+        
         pos = pygame.mouse.get_pos()
         if self.rect.collidepoint(pos):
             if pygame.mouse.get_pressed()[0] == True and clicked == False:
@@ -50,6 +52,8 @@ class Widget(pygame.sprite.Sprite):
                         img_dir = buttons_dir + self.img_class + "_clicked.png"
                     elif self.img_screen == "lvl_select":
                         img_dir = level_btn_dir + self.img_class + "_clicked.png"
+                    elif self.img_class == "pause_inactive":
+                        img_dir = level_btn_dir + self.img_class
                     img_clicked = pygame.image.load(img_dir)
                     self.image = pygame.transform.scale(img_clicked, self.new_size)
             if pygame.mouse.get_pressed()[0] == False and clicked == True:
@@ -59,14 +63,20 @@ class Widget(pygame.sprite.Sprite):
                         img_dir = buttons_dir + self.img_class + "_notclicked.png"
                     elif self.img_screen == "lvl_select":
                         img_dir = level_btn_dir + self.img_class + "_notclicked.png"
+                    elif self.img_class == "pause_inactive":
+                        img_dir = level_btn_dir + self.img_class
                     img_notclicked = pygame.image.load(img_dir)
                     self.image = pygame.transform.scale(img_notclicked, self.new_size)
-                self.level_num, action, resize = change_action.ChangeAction(action, self.img_class, self.level_num)
+                if self.level_num != None:
+                    self.level_num, action, resize = change_action.ChangeAction(action, self.img_class, self.level_num)
+                else:
+                    self.level_num, action, resize = change_action.ChangeAction(action, self.img_class, level_num)
 
         return self.level_num, action, clicked, resize
     
     def move(self):
-        go.clicked_func(self, Widget)
+        goal = go.clicked_func(self, Widget)
+        return goal
 
     def Resize(self, scale):
         self.new_size = (self.size[0] * scale, self.size[1] * scale)      
@@ -82,16 +92,19 @@ images_dir = path.join(path.dirname(__file__), 'img/')
 buttons_dir = path.join(path.dirname(__file__), 'img/Buttons/')
 level_btn_dir = path.join(path.dirname(__file__), "img/Buttons/levels_buttons/")
 text_dir = path.join(path.dirname(__file__), "img/Text/")
+goal_frames = path.join(path.dirname(__file__), "img/Goal_anim/")
+
+ANIM_FRAMES = pygame.sprite.Group()
 
 start_btn_img = pygame.image.load(buttons_dir + "start_notclicked.png") # Start Menu
 set_btn_img = pygame.image.load(buttons_dir + "set_notclicked.png")
 exit_btn_img = pygame.image.load(buttons_dir + "exit_notclicked.png")
 Name_img = pygame.image.load(images_dir + "name.png")
 
-start_btn = Widget(start_btn_img, ((x_s/2),((y_s/20) * 8)), .4,"main", "start")
-set_btn = Widget(set_btn_img, ((x_s/2),((y_s/20) * 11)), .4,"main", "set")
-exit_btn = Widget(exit_btn_img, ((x_s/2),((y_s/20) * 14)), .4,"main", "exit")
-Name = Widget(Name_img, ((x_s/2),(y_s/7)), 1.2,"main", "name")
+start_btn = Widget(start_btn_img, ((x_s/2),((y_s/20) * 8)), .4 * scale,"main", "start")
+set_btn = Widget(set_btn_img, ((x_s/2),((y_s/20) * 11)), .4 * scale,"main", "set")
+exit_btn = Widget(exit_btn_img, ((x_s/2),((y_s/20) * 14)), .4 * scale,"main", "exit")
+Name = Widget(Name_img, ((x_s/2),(y_s/7)), 1.2 * scale,"main", "name")
 
 START = pygame.sprite.Group()
 START.add(start_btn, set_btn, exit_btn, Name)
@@ -112,76 +125,59 @@ N2_btn_img = pygame.image.load(level_btn_dir + "N2_notclicked.png")
 N3_btn_img = pygame.image.load(level_btn_dir + "N3_notclicked.png")
 Level_select_Name_img = pygame.image.load(level_btn_dir + "level_select.png")
 
-back_btn = Widget(back_btn_img, ((x_s/5),(y_s/10)), .3, "lvl_select", "back")
+back_btn = Widget(back_btn_img, ((x_s/5),(y_s/10)), .3 * scale, "lvl_select", "back")
 
-N1_btn = Widget(N1_btn_img, (((x_s/2) - (x_s/10)),((y_s/10) * 3)), .3, "lvl_select", "N1", 1) # x pos - (x_s/2) +- (x_s/10)
-N2_btn = Widget(N2_btn_img, (((x_s/2))          ,((y_s/10) * 3)), .3, "lvl_select", "N2", 2)  # y pos - y_s/10 * 3/5/7
-N3_btn = Widget(N3_btn_img, (((x_s/2) + (x_s/10)),((y_s/10) * 3)), .3, "lvl_select", "N3", 3)
+N1_btn = Widget(N1_btn_img, (((x_s/2) - (x_s/10)),((y_s/10) * 3)), .3 * scale, "lvl_select", "N1", 1) # x pos - (x_s/2) +- (x_s/10)
+N2_btn = Widget(N2_btn_img, (((x_s/2))          ,((y_s/10) * 3)), .3 * scale, "lvl_select", "N2", 2)  # y pos - y_s/10 * 3/5/7
+N3_btn = Widget(N3_btn_img, (((x_s/2) + (x_s/10)),((y_s/10) * 3)), .3 * scale, "lvl_select", "N3", 3)
 
-Level_select_Name = Widget(Level_select_Name_img,(((x_s/2)),(y_s/10)), .9, "lvl_select", "name")
+Level_select_Name = Widget(Level_select_Name_img,(((x_s/2)),(y_s/10)), .9 * scale, "lvl_select", "name")
 
 LVL_S = pygame.sprite.Group()
 LVL_S.add(back_btn, N1_btn, N2_btn, N3_btn, Level_select_Name)
 
 ball_img = pygame.image.load(images_dir + "ball.png")
 pause_btn_img = pygame.image.load(level_btn_dir + "pause_notclicked.png")
+pause_inactve_img = pygame.image.load(level_btn_dir + "pause_inactive.png")
+hole_img = pygame.image.load(images_dir + "hole.png")
 
-ball = Widget(ball_img, ((x_s/2), (y_s/2)), .2, "level", "ball")
-pause_btn = Widget(pause_btn_img, ((y_s/15),(y_s/15)), .25, "lvl_select", "pause")
+next_level_img = pygame.image.load(level_btn_dir + "next_notclicked.png")
+
+ball = Widget(ball_img, ((x_s/2), (y_s/2)), .2 * scale, "level", "ball")
+pause_btn = Widget(pause_btn_img, ((y_s/15),(y_s/15)), .25 * scale, "lvl_select", "pause")
+pause_inactve = Widget(pause_inactve_img, ((y_s/15),(y_s/15)), .25 * scale, "lvl_select", "pause_inactive")
+hole = Widget(hole_img, ((x_s/2), (y_s/6)), .4 * scale, "level", "hole")
+
+next_level = Widget(next_level_img, ((x_s/2),((y_s/10) * 8)), .3 * scale, "lvl_select", "next")
 
 LEVEL = pygame.sprite.Group()
 BALL = pygame.sprite.Group()
+HOLE = pygame.sprite.Group()
+INACTIVE = pygame.sprite.Group()
+LEVEL_BUTTONS = pygame.sprite.Group()
+
+HOLE.add(hole)
 BALL.add(ball)
-LEVEL.add(ball, pause_btn)
+LEVEL.add(hole, ball, pause_btn)
+LEVEL_BUTTONS.add(pause_btn, next_level)
+INACTIVE.add(pause_inactve)
 
 res_img = pygame.image.load(text_dir + "resolution.png")
 
-res = Widget(res_img, ((x_s/4),((y_s/10) * 3)), .6, "res_select", "name")
+res = Widget(res_img, ((x_s/4),((y_s/10) * 3)), .6 * scale, "res_select", "name")
 
 apply_img = pygame.image.load(buttons_dir + "apply_notclicked.png")
 
-apply = Widget(apply_img, ((x_s/2),((y_s/10) * 8)), .3, "main", "apply")
+apply = Widget(apply_img, ((x_s/2),((y_s/10) * 8)), .3 * scale, "main", "apply")
 
 SETTINGS = pygame.sprite.Group()
 SETTINGS.add(res, back_btn, apply)
 
 resume_btn_img = pygame.image.load(buttons_dir + "res_notclicked.png")
-resume_btn = Widget(resume_btn_img, ((x_s/2),(y_s/20) * 8), .4, "main", "res")
+resume_btn = Widget(resume_btn_img, ((x_s/2),(y_s/20) * 8), .4 * scale, "main", "res")
 
 pause_img = pygame.image.load(text_dir + "pause.png")
-pause = Widget(pause_img, ((x_s/2),(y_s/7)), 1.2, "pause", "name")
+pause = Widget(pause_img, ((x_s/2),(y_s/7)), 1.2 * scale, "pause", "name")
 
 PAUSE = pygame.sprite.Group()
 PAUSE.add(resume_btn, set_btn, exit_btn, pause)
-
-# dictionary = locals()
-# variable = 2
-# char = None
-# for variable in dictionary.items():
-#     print(variable[1])
-#     variable[1].replace()
-from pygame_widgets.slider import Slider
-from pygame_widgets.textbox import TextBox    
-def init_pygame_widget(screen, scale, slider = None, textBox = None):
-    global x_s, y_s, Slider, TextBox
-
-    slider = Slider(screen, int(x_s/2.3),int(((y_s/10) * 2.7)),400,50, min=10, max=100, step=10, initial=100, colour=(242, 196, 116), handleColour=(46, 45, 6))
-    textBox = TextBox(screen, int(x_s/1.3),int(((y_s/10) * 2.7)),200,50, fontSize=40, radius = 5, colour=(242, 196, 116), textColour=(46, 45, 6))
-    textBox.disable()
-    # slider = Slider(screen, 20,10,400,50)
-    print(slider._y)
-    
-
-    return slider, textBox
-
-def text_ScreenSize(textBox, slider):
-    screen_x, screen_y = GetScreenSize()
-
-    Value = slider.getValue()
-    Value = (Value / 100)
-
-    screen_size = (str(int(screen_x * Value)) + " x " + str(int(screen_y * Value)))
-
-    textBox.setText(screen_size)
-
-    return Value
