@@ -7,8 +7,9 @@ pos1 = None
 pos2 = None
 
 def go(velx, vely, position, ball, Ball):
-    from draw import screen, main_screen
-    from init_img import bg_img, BALL, LEVEL, HOLE, INACTIVE
+    from level_load import LevelLoad
+    from draw import screen, main_screen, level_num, screen
+    from init_img import bg_img, BALL, LEVEL, HOLE, INACTIVE, BOXES
     x_s, y_s = GetScreenSize()
     x_vel = 1
     y_vel = 1
@@ -55,6 +56,7 @@ def go(velx, vely, position, ball, Ball):
             ball.rect.center = (-50,0)
             screen.blit(bg_img, (0,0))
             BALL.update()
+            # BOXES.draw(screen)
             BALL.draw(screen)
             INACTIVE.draw(screen)
             # main_screen.blit(pygame.transform.scale(screen, main_screen.get_rect().size), (0, 0))
@@ -62,13 +64,9 @@ def go(velx, vely, position, ball, Ball):
             break
         screen.blit(bg_img, (0,0))
         BALL.update()
-        # pause button
         # score
-        # boxes
-        HOLE.draw(screen)
-        BALL.draw(screen)
-        INACTIVE.draw(screen)
-        # LEVEL.draw(screen)
+        # BOXES.draw(screen)
+        LevelLoad(level_num, screen, "action")
         main_screen.blit(pygame.transform.scale(screen, main_screen.get_rect().size), (0, 0))
         pygame.display.flip()
     return goal
