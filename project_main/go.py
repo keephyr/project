@@ -15,8 +15,11 @@ def go(velx, vely, position, ball, Ball):
     y_vel = 1
     number = 0.6
     goal = False
+    outside_box_x = False
+    outside_box_y = False
     outside_x = False
     outside_y = False
+    num = 0
     while x_vel != 0 and y_vel != 0:
         i = 0
         x_vel = round(velx * number, 2)
@@ -24,23 +27,34 @@ def go(velx, vely, position, ball, Ball):
         position[0] = round(position[0] + round((x_vel * number) / 5, 3), 1)
         position[1] = round(position[1] + round((y_vel * number) / 5, 3), 1)
 
+        hit_list = pygame.sprite.spritecollide(ball, BOXES, False)
+        for box in hit_list:
+            if ball.rect.right >= box.rect.left and ball.rect.left < box.rect.left: #left side of the box
+                if ball.rect.top >= box.rect.top and ball.rect.bottom <= box.rect.bottom:
+                        x_vel = -abs(x_vel)
+                        velx = -abs(velx)
+                        position[0] = round(position[0] + round((x_vel * number) / 10, 3), 1)
+            if ball.rect.left <= box.rect.right and ball.rect.right > box.rect.right: # right side of the box
+                if ball.rect.top >= box.rect.top and ball.rect.bottom <= box.rect.bottom:
+                        x_vel = abs(x_vel)
+                        velx = abs(velx)
+                        position[0] = round(position[0] + round((x_vel * number) / 10, 3), 1)
+            if ball.rect.top <= box.rect.bottom and ball.rect.bottom > box.rect.bottom: # bottom side of the box
+                if ball.rect.left >= box.rect.left and ball.rect.right <= box.rect.right:
+                        y_vel = abs(y_vel)
+                        vely = abs(vely)
+                        position[1] = round(position[1] + round((y_vel * number) / 10, 3), 1)
+            if ball.rect.bottom >= box.rect.top and ball.rect.top < box.rect.top: # bottom side of the box
+                if ball.rect.left >= box.rect.left and ball.rect.right <= box.rect.right:
+                        y_vel = -abs(y_vel)
+                        vely = -abs(vely)
+                        position[1] = round(position[1] + round((y_vel * number) / 10, 3), 1)
+
         if position[0] <= 0 or position[0] >= x_s:
-            if outside_x == True:
-                if position[0] > 0 or position[0] < x_s:
-                    outside_x = False
-                else:
-                    pass
-            else:
                 x_vel = -x_vel      
                 velx = -velx
                 position[0] = round(position[0] + round((x_vel * number) / 10, 3), 1)
         if position[1] <= 0 or position[1] >= y_s:
-            if outside_y == True:
-                if position[1] > 0 or position[1] < y_s:
-                    outside_y = False
-                else:
-                    pass
-            else:
                 y_vel = -y_vel      
                 vely = -vely
                 position[1] = round(position[1] + round((y_vel * number) / 10, 3), 1)
@@ -49,23 +63,19 @@ def go(velx, vely, position, ball, Ball):
         number = number - 0.01
         number = round(number,2)
         
-        hit_list = pygame.sprite.spritecollide(ball, HOLE, False)
-        for hit in hit_list:
+        goal_list = pygame.sprite.spritecollide(ball, HOLE, False)
+        for hit in goal_list:
             goal = True
         if goal == True:
             ball.rect.center = (-50,0)
             screen.blit(bg_img, (0,0))
             BALL.update()
-            # BOXES.draw(screen)
             BALL.draw(screen)
             INACTIVE.draw(screen)
-            # main_screen.blit(pygame.transform.scale(screen, main_screen.get_rect().size), (0, 0))
             pygame.display.flip()
             break
         screen.blit(bg_img, (0,0))
         BALL.update()
-        # score
-        # BOXES.draw(screen)
         LevelLoad(level_num, screen, "action")
         main_screen.blit(pygame.transform.scale(screen, main_screen.get_rect().size), (0, 0))
         pygame.display.flip()
