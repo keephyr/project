@@ -32,8 +32,6 @@ def ChangeAction(action, btn_class, level = None, resize = False):
     elif action == "level":
         if btn_class == "pause":
             action = "pause"
-            print(level_num)
-            print(level)
             level_num = level
 
     elif action == "pause":

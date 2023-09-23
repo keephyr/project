@@ -52,12 +52,12 @@ def Draw(action, clicked, run, event):
         loading = True
         for button in ii.LVL_S:
             if action != "lvl_select":
-                loading, level_num = LevelLoad(level_num, screen, action, loading)
-                if level != None:
-                    level_num = level 
+                loading, level_num = LevelLoad(level_num, screen, action, loading) 
                 break
             else:
                 level, action, clicked, resize = button.draw_clicked(action, clicked, level_num)
+                if level != None:
+                    level_num = level
                            
     elif action == "level":
         screen.blit(ii.bg_img, (0,0))

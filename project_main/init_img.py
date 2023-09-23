@@ -143,6 +143,9 @@ back_btn_img = pygame.image.load(level_btn_dir + "back_notclicked.png") # Level 
 N1_btn_img = pygame.image.load(level_btn_dir + "N1_notclicked.png")
 N2_btn_img = pygame.image.load(level_btn_dir + "N2_notclicked.png")
 N3_btn_img = pygame.image.load(level_btn_dir + "N3_notclicked.png")
+N4_btn_img = pygame.image.load(level_btn_dir + "N4_notclicked.png")
+N5_btn_img = pygame.image.load(level_btn_dir + "N5_notclicked.png")
+N6_btn_img = pygame.image.load(level_btn_dir + "N6_notclicked.png")
 Level_select_Name_img = pygame.image.load(level_btn_dir + "level_select.png")
 
 back_btn = Widget(back_btn_img, ((x_s/5),(y_s/10)), .3 * scale, "lvl_select", "back")
@@ -150,11 +153,14 @@ back_btn = Widget(back_btn_img, ((x_s/5),(y_s/10)), .3 * scale, "lvl_select", "b
 N1_btn = Widget(N1_btn_img, (((x_s/2) - (x_s/10)),((y_s/10) * 3)), .3 * scale, "lvl_select", "N1", 1) # x pos - (x_s/2) +- (x_s/10)
 N2_btn = Widget(N2_btn_img, (((x_s/2))          ,((y_s/10) * 3)), .3 * scale, "lvl_select", "N2", 2)  # y pos - y_s/10 * 3/5/7
 N3_btn = Widget(N3_btn_img, (((x_s/2) + (x_s/10)),((y_s/10) * 3)), .3 * scale, "lvl_select", "N3", 3)
+N4_btn = Widget(N4_btn_img, (((x_s/2) - (x_s/10)),((y_s/10) * 5)), .3 * scale, "lvl_select", "N4", 4) # x pos - (x_s/2) +- (x_s/10)
+N5_btn = Widget(N5_btn_img, (((x_s/2))          ,((y_s/10) * 5)), .3 * scale, "lvl_select", "N5", 5)  # y pos - y_s/10 * 3/5/7
+N6_btn = Widget(N6_btn_img, (((x_s/2) + (x_s/10)),((y_s/10) * 5)), .3 * scale, "lvl_select", "N6", 6)
 
 Level_select_Name = Widget(Level_select_Name_img,(((x_s/2)),(y_s/10)), .9 * scale, "lvl_select", "name")
 
 LVL_S = pygame.sprite.Group()
-LVL_S.add(back_btn, N1_btn, N2_btn, N3_btn, Level_select_Name)
+LVL_S.add(back_btn, N1_btn, N2_btn, N3_btn,N4_btn,N5_btn,N6_btn, Level_select_Name)
 
 
 
@@ -166,7 +172,7 @@ hole_img = pygame.image.load(images_dir + "hole.png")
 next_level_img = pygame.image.load(level_btn_dir + "next_notclicked.png")
 level_passed_img = pygame.image.load(text_dir + "level_passed.png")
 
-ball = Widget(ball_img, ((x_s/2), (y_s/2)), .2 * scale, "level", "ball")
+ball = Widget(ball_img, ((x_s/2), (y_s - y_s / 6)), .2 * scale, "level", "ball")
 pause_btn = Widget(pause_btn_img, ((y_s/15),(y_s/15)), .25 * scale, "lvl_select", "pause")
 pause_inactve = Widget(pause_inactve_img, ((y_s/15),(y_s/15)), .25 * scale, "lvl_select", "pause_inactive")
 hole = Widget(hole_img, ((x_s/2), (y_s/6)), .4 * scale, "level", "hole")
@@ -213,11 +219,17 @@ PAUSE.add(resume_btn, set_btn, exit_btn, pause)
 
 
 box_img = pygame.image.load(boxes_dir + "box.png")
+box_2_col_img = pygame.image.load(boxes_dir + "boxes_2_column.png")
+box_3_row_img = pygame.image.load(boxes_dir + "boxes_3_row.png")
+box_5_row_img = pygame.image.load(boxes_dir + "boxes_5_row.png")
 
-box = Box(box_img, (100,100), 2)
+box = Box(box_img, (-50,-50), 2)
+box_2_col = Box(box_2_col_img, (-50,-50), 2)
+box_3_row = Box(box_3_row_img, (-50,-50), 2)
+box_5_row = Box(box_5_row_img, (-50,-50), 2)
 
 BOXES = pygame.sprite.Group()
 
-BOXES.add(box)
+BOXES.add(box, box_2_col, box_5_row, box_3_row)
 
 
