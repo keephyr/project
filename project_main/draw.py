@@ -16,11 +16,12 @@ scale = 1
 level_num = None
 loading = False
 screen_x, screen_y = GetScreenSize()
+biome = 0
 pygame.display.set_caption("Golf")
 clock = pygame.time.Clock()
 
-def Draw(action, clicked, run, event):
-    global resize, main_screen, screen, scale, screen_x, screen_y, clock, level_num, loading
+def Draw(action, clicked, run):
+    global resize, main_screen, screen, scale, screen_x, screen_y, clock, level_num, loading, biome
     if resize == True:
         x_s = screen_x * scale
         y_s = screen_y * scale
@@ -35,7 +36,7 @@ def Draw(action, clicked, run, event):
             if action != "Start":
                 break
             else:
-                level, action, clicked, resize = button.draw_clicked(action, clicked, level_num)              
+                level, action, clicked, resize, biome = button.draw_clicked(action, clicked, biome, level_num)              
     elif action == "settings":
         screen.blit(ii.bg_img, (0,0))
         ii.BG.draw(screen)
@@ -44,18 +45,25 @@ def Draw(action, clicked, run, event):
             if action != "settings":
                 break
             else:
-                level, action, clicked, resize = button.draw_clicked(action, clicked, level_num)               
+                level, action, clicked, resize, biome = button.draw_clicked(action, clicked, biome, level_num)               
     elif action == "lvl_select":
         screen.blit(ii.bg_img, (0,0))
         ii.BG.draw(screen)
         ii.LVL_S.draw(screen)
+        if biome == 0:
+            ii.bg_img = ii.bg_plain_img
+            ii.PLAIN.draw(screen)
+        elif biome == 1:
+            ii.bg_img = ii.bg_sand_img
+            ii.SAND.draw(screen)
         loading = True
-        for button in ii.LVL_S:
+        for button in ii.BTNS:
             if action != "lvl_select":
-                loading, level_num = LevelLoad(level_num, screen, action, loading) 
+                if action == "level":
+                    loading, level_num = LevelLoad(level_num, screen, action, loading) 
                 break
             else:
-                level, action, clicked, resize = button.draw_clicked(action, clicked, level_num)
+                level, action, clicked, resize, biome = button.draw_clicked(action, clicked, biome, level_num)
                 if level != None:
                     level_num = level
                            
@@ -86,7 +94,7 @@ def Draw(action, clicked, run, event):
                         action = "next_level"
                         
                 else:
-                    level, action, clicked, resize = img.draw_clicked(action, clicked, level_num)                   
+                    level, action, clicked, resize, biome = img.draw_clicked(action, clicked, biome, level_num)                   
     elif action == "pause":
         screen.blit(ii.bg_img, (0,0))
         ii.BG.draw(screen)
@@ -95,7 +103,7 @@ def Draw(action, clicked, run, event):
             if action != "pause":
                 break
             else:
-                level, action, clicked, resize = button.draw_clicked(action, clicked, level_num)
+                level, action, clicked, resize, biome = button.draw_clicked(action, clicked, biome, level_num)
     elif action == "next_level":
         screen.blit(ii.bg_img, (0,0))
         loading, level_num = LevelLoad(level_num, screen, action, loading)
@@ -106,12 +114,13 @@ def Draw(action, clicked, run, event):
                 loading, level_num = LevelLoad(level_num, screen, action, loading)
                 break
             else:
-                level, action, clicked, resize = button.draw_clicked(action, clicked, level_num)
+                level, action, clicked, resize, biome = button.draw_clicked(action, clicked, biome, level_num)
     elif action == "exit":
         run = False
     else:
         run = False
         print("No action selected")
+    print(biome)
     main_screen.blit(pygame.transform.scale(screen, main_screen.get_rect().size), (0, 0))
     pygame.display.flip()
     return run, action, clicked

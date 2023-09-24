@@ -12,7 +12,7 @@ while run:
     for event in events:
         if event.type == pygame.QUIT:
             run = False
-    run, action, clicked = draw.Draw(action, clicked, run, events)
+    run, action, clicked = draw.Draw(action, clicked, run)
     clock.tick(60)
 
 pygame.quit()
