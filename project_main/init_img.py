@@ -43,7 +43,7 @@ class Widget(pygame.sprite.Sprite):
         self.rect.center = position
         self.position = position
 
-    def draw_clicked(self,action, clicked,level_num = None, resize = False):
+    def draw_clicked(self,action, clicked,biome,level_num = None, resize = False):
         
         pos = pygame.mouse.get_pos()
         if self.rect.collidepoint(pos):
@@ -70,11 +70,11 @@ class Widget(pygame.sprite.Sprite):
                     img_notclicked = pygame.image.load(img_dir)
                     self.image = pygame.transform.scale(img_notclicked, self.new_size)
                 if self.level_num != None:
-                    self.level_num, action, resize = change_action.ChangeAction(action, self.img_class, self.level_num)
+                    self.level_num, action, resize, biome = change_action.ChangeAction(action, self.img_class, biome, self.level_num)
                 else:
-                    self.level_num, action, resize = change_action.ChangeAction(action, self.img_class, level_num)
+                    self.level_num, action, resize, biome = change_action.ChangeAction(action, self.img_class, biome, level_num)
 
-        return self.level_num, action, clicked, resize
+        return self.level_num, action, clicked, resize, biome
     
     def move(self):
         goal = go.clicked_func(self, Widget)
@@ -127,10 +127,12 @@ START.add(start_btn, set_btn, exit_btn, Name)
 
 
 
-bg_img = pygame.image.load(images_dir + "Background/bg.png") # Background
+bg_plain_img = pygame.image.load(images_dir + "Background/bg_plain.png") # Background
+bg_sand_img = pygame.image.load(images_dir + "Background/bg_sand.png")
 bg_toner_img = pygame.image.load(images_dir + "Background/bg_toner.png")
 
-bg = Background(bg_img)
+bg_img = bg_plain_img
+# bg = Background(bg_sand_img)
 bg_toner = Background(bg_toner_img)
 
 BG = pygame.sprite.Group()
@@ -146,7 +148,12 @@ N3_btn_img = pygame.image.load(level_btn_dir + "N3_notclicked.png")
 N4_btn_img = pygame.image.load(level_btn_dir + "N4_notclicked.png")
 N5_btn_img = pygame.image.load(level_btn_dir + "N5_notclicked.png")
 N6_btn_img = pygame.image.load(level_btn_dir + "N6_notclicked.png")
-Level_select_Name_img = pygame.image.load(level_btn_dir + "level_select.png")
+
+Plain_img = pygame.image.load(text_dir + "Plain.png")
+Sand_img = pygame.image.load(text_dir + "Sand.png")
+
+left_btn_img = pygame.image.load(level_btn_dir + "left_notclicked.png")
+right_btn_img = pygame.image.load(level_btn_dir + "right_notclicked.png")
 
 back_btn = Widget(back_btn_img, ((x_s/5),(y_s/10)), .3 * scale, "lvl_select", "back")
 
@@ -157,11 +164,20 @@ N4_btn = Widget(N4_btn_img, (((x_s/2) - (x_s/10)),((y_s/10) * 5)), .3 * scale, "
 N5_btn = Widget(N5_btn_img, (((x_s/2))          ,((y_s/10) * 5)), .3 * scale, "lvl_select", "N5", 5)  # y pos - y_s/10 * 3/5/7
 N6_btn = Widget(N6_btn_img, (((x_s/2) + (x_s/10)),((y_s/10) * 5)), .3 * scale, "lvl_select", "N6", 6)
 
-Level_select_Name = Widget(Level_select_Name_img,(((x_s/2)),(y_s/10)), .9 * scale, "lvl_select", "name")
+left_btn = Widget(left_btn_img,((x_s/5),y_s - (y_s/10)), .3 * scale, "lvl_select", "left")
+right_btn = Widget(right_btn_img,(x_s - (x_s/5),y_s - (y_s/10)), .3 * scale, "lvl_select", "right")
+
+Plain_name = Widget(Plain_img,(((x_s/2)),(y_s/10)), .9 * scale, "lvl_select", "name")
+Sand_name = Widget(Sand_img,(((x_s/2)),(y_s/10)), .9 * scale, "lvl_select", "name")
 
 LVL_S = pygame.sprite.Group()
-LVL_S.add(back_btn, N1_btn, N2_btn, N3_btn,N4_btn,N5_btn,N6_btn, Level_select_Name)
-
+PLAIN = pygame.sprite.Group()
+SAND = pygame.sprite.Group()
+BTNS = pygame.sprite.Group()
+LVL_S.add(back_btn, left_btn, right_btn)
+PLAIN.add(Plain_name, N1_btn, N2_btn, N3_btn, N4_btn, N5_btn, N6_btn)
+SAND.add(Sand_name)
+BTNS.add(back_btn, left_btn, right_btn, N1_btn, N2_btn, N3_btn, N4_btn, N5_btn, N6_btn)
 
 
 ball_img = pygame.image.load(images_dir + "ball.png")

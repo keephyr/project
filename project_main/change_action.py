@@ -1,6 +1,6 @@
 import pygame
 level_num = 0
-def ChangeAction(action, btn_class, level = None, resize = False):
+def ChangeAction(action, btn_class, biome, level = None, resize = False):
     global level_num
     if action == "Start":
 
@@ -20,6 +20,16 @@ def ChangeAction(action, btn_class, level = None, resize = False):
         elif btn_class[0] == "N":
             action = "level"
             level_num = level
+        elif btn_class == "left":
+            if biome == 0:
+                pass
+            else:
+                biome -= 1
+        elif btn_class == "right":
+            if biome == 1:
+                pass
+            else:
+                biome += 1
 
     elif action == "settings":
 
@@ -50,4 +60,4 @@ def ChangeAction(action, btn_class, level = None, resize = False):
             level += 1
             action = "level" 
         
-    return level_num, action, resize
+    return level_num, action, resize, biome
