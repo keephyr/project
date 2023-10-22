@@ -2,13 +2,11 @@ import pygame
 import init_img as ii
 import importlib
 
-from threading import Event
 from get_size import GetScreenSize
 from level_load import LevelLoad
-
+from change_pos import Change_btn_pos
 
 pygame.init()
-event = Event()
 main_screen = pygame.display.set_mode((960,540))
 screen = main_screen.copy()
 resize = True
@@ -33,23 +31,22 @@ def Draw(action, clicked, run):
         ii.BG.draw(screen)
         ii.START.draw(screen)
         for button in ii.START:
+            level, action, clicked, resize, biome = button.draw_clicked(action, clicked, biome, level_num)              
             if action != "Start":
                 break
-            else:
-                level, action, clicked, resize, biome = button.draw_clicked(action, clicked, biome, level_num)              
     elif action == "settings":
         screen.blit(ii.bg_img, (0,0))
         ii.BG.draw(screen)
         ii.SETTINGS.draw(screen)
         for button in ii.SETTINGS:
+            level, action, clicked, resize, biome = button.draw_clicked(action, clicked, biome, level_num)  
             if action != "settings":
-                break
-            else:
-                level, action, clicked, resize, biome = button.draw_clicked(action, clicked, biome, level_num)               
+                break                      
     elif action == "lvl_select":
         screen.blit(ii.bg_img, (0,0))
         ii.BG.draw(screen)
         ii.LVL_S.draw(screen)
+        ii.BTNS, ii.PLAIN, ii.SAND = Change_btn_pos(biome)
         if biome == 0:
             ii.bg_img = ii.bg_plain_img
             ii.PLAIN.draw(screen)
@@ -58,20 +55,19 @@ def Draw(action, clicked, run):
             ii.SAND.draw(screen)
         loading = True
         for button in ii.BTNS:
+            level, action, clicked, resize, biome = button.draw_clicked(action, clicked, biome, level_num)
+            if level != None:
+                level_num = level
             if action != "lvl_select":
                 if action == "level":
-                    loading, level_num = LevelLoad(level_num, screen, action, loading) 
-                break
-            else:
-                level, action, clicked, resize, biome = button.draw_clicked(action, clicked, biome, level_num)
-                if level != None:
-                    level_num = level
-                           
+                    loading, level_num = LevelLoad(level_num, screen, action, loading = loading) 
+                break              
     elif action == "level":
         screen.blit(ii.bg_img, (0,0))
         loading, level_num = LevelLoad(level_num, screen, action)
         num = 0
         for img in ii.LEVEL:
+            level, action, clicked, resize, biome = img.draw_clicked(action, clicked, biome, level_num)                   
             if action != "level":
                 break
             else:
@@ -92,35 +88,29 @@ def Draw(action, clicked, run):
                             pygame.display.flip()
                         clock.tick(60)
                         action = "next_level"
-                        
-                else:
-                    level, action, clicked, resize, biome = img.draw_clicked(action, clicked, biome, level_num)                   
     elif action == "pause":
         screen.blit(ii.bg_img, (0,0))
         ii.BG.draw(screen)
         ii.PAUSE.draw(screen)
         for button in ii.PAUSE:
+            level, action, clicked, resize, biome = button.draw_clicked(action, clicked, biome, level_num)
             if action != "pause":
                 break
-            else:
-                level, action, clicked, resize, biome = button.draw_clicked(action, clicked, biome, level_num)
     elif action == "next_level":
         screen.blit(ii.bg_img, (0,0))
         loading, level_num = LevelLoad(level_num, screen, action, loading)
         ii.LEVEL_BUTTONS.draw(screen)
         for button in ii.LEVEL_BUTTONS:
+            level, action, clicked, resize, biome = button.draw_clicked(action, clicked, biome, level_num)
             if action != "next_level":
                 level_num = level_num + 1
                 loading, level_num = LevelLoad(level_num, screen, action, loading)
                 break
-            else:
-                level, action, clicked, resize, biome = button.draw_clicked(action, clicked, biome, level_num)
     elif action == "exit":
         run = False
     else:
         run = False
         print("No action selected")
-    print(biome)
     main_screen.blit(pygame.transform.scale(screen, main_screen.get_rect().size), (0, 0))
     pygame.display.flip()
     return run, action, clicked

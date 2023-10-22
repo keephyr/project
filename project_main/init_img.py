@@ -1,7 +1,6 @@
 import pygame
 from os import path
 
-from pygame.sprite import AbstractGroup
 from get_size import GetScreenSize
 
 import go
@@ -9,7 +8,6 @@ import change_action
 
 x_s, y_s = GetScreenSize()
 scale = x_s / 1920
-print(scale)
 class Background(pygame.sprite.Sprite):
     def __init__(self, image):
         super().__init__()
@@ -26,8 +24,9 @@ class Background(pygame.sprite.Sprite):
         return x
     
 class Widget(pygame.sprite.Sprite):
-    def __init__(self, image, position, scale, img_screen, img_class, level_num = None):
+    def __init__(self, image, position, scale, img_screen, img_class, level_num = None, biome = None):
         super().__init__()
+        self.biome = biome
         self.level_num = level_num
         self.img_class = img_class
         self.img_screen = img_screen
@@ -43,8 +42,7 @@ class Widget(pygame.sprite.Sprite):
         self.rect.center = position
         self.position = position
 
-    def draw_clicked(self,action, clicked,biome,level_num = None, resize = False):
-        
+    def draw_clicked(self,action, clicked,biome_num,level_num = None, resize = False):
         pos = pygame.mouse.get_pos()
         if self.rect.collidepoint(pos):
             if pygame.mouse.get_pressed()[0] == True and clicked == False:
@@ -70,11 +68,11 @@ class Widget(pygame.sprite.Sprite):
                     img_notclicked = pygame.image.load(img_dir)
                     self.image = pygame.transform.scale(img_notclicked, self.new_size)
                 if self.level_num != None:
-                    self.level_num, action, resize, biome = change_action.ChangeAction(action, self.img_class, biome, self.level_num)
+                    self.level_num, action, resize, biome_num = change_action.ChangeAction(action, self.img_class, biome_num, self.level_num)
                 else:
-                    self.level_num, action, resize, biome = change_action.ChangeAction(action, self.img_class, biome, level_num)
+                    self.level_num, action, resize, biome_num = change_action.ChangeAction(action, self.img_class, biome_num, level_num)
 
-        return self.level_num, action, clicked, resize, biome
+        return self.level_num, action, clicked, resize, biome_num
     
     def move(self):
         goal = go.clicked_func(self, Widget)
@@ -90,9 +88,10 @@ class Widget(pygame.sprite.Sprite):
         else:
             pass
 
-class Box(pygame.sprite.Sprite):
-    def __init__(self, image, position, scale):
+class Prop(pygame.sprite.Sprite):
+    def __init__(self, image, position, scale, prop_class):
         super().__init__()
+        self.prop_class = prop_class
         size = image.get_rect()
         self.position = position
         self.new_size = (size[2] * scale, size[3] * scale)
@@ -106,7 +105,7 @@ buttons_dir = path.join(path.dirname(__file__), 'img/Buttons/')
 level_btn_dir = path.join(path.dirname(__file__), "img/Buttons/levels_buttons/")
 text_dir = path.join(path.dirname(__file__), "img/Text/")
 goal_frames = path.join(path.dirname(__file__), "img/Goal_anim/")
-boxes_dir = path.join(path.dirname(__file__), 'img/Boxes/')
+props_dir = path.join(path.dirname(__file__), 'img/Props/')
 
 ANIM_FRAMES = pygame.sprite.Group()
 
@@ -148,6 +147,12 @@ N3_btn_img = pygame.image.load(level_btn_dir + "N3_notclicked.png")
 N4_btn_img = pygame.image.load(level_btn_dir + "N4_notclicked.png")
 N5_btn_img = pygame.image.load(level_btn_dir + "N5_notclicked.png")
 N6_btn_img = pygame.image.load(level_btn_dir + "N6_notclicked.png")
+N7_btn_img = pygame.image.load(level_btn_dir + "N7_notclicked.png")
+N8_btn_img = pygame.image.load(level_btn_dir + "N8_notclicked.png")
+N9_btn_img = pygame.image.load(level_btn_dir + "N9_notclicked.png")
+N10_btn_img = pygame.image.load(level_btn_dir + "N10_notclicked.png")
+N11_btn_img = pygame.image.load(level_btn_dir + "N11_notclicked.png")
+
 
 Plain_img = pygame.image.load(text_dir + "Plain.png")
 Sand_img = pygame.image.load(text_dir + "Sand.png")
@@ -157,12 +162,21 @@ right_btn_img = pygame.image.load(level_btn_dir + "right_notclicked.png")
 
 back_btn = Widget(back_btn_img, ((x_s/5),(y_s/10)), .3 * scale, "lvl_select", "back")
 
-N1_btn = Widget(N1_btn_img, (((x_s/2) - (x_s/10)),((y_s/10) * 3)), .3 * scale, "lvl_select", "N1", 1) # x pos - (x_s/2) +- (x_s/10)
-N2_btn = Widget(N2_btn_img, (((x_s/2))          ,((y_s/10) * 3)), .3 * scale, "lvl_select", "N2", 2)  # y pos - y_s/10 * 3/5/7
-N3_btn = Widget(N3_btn_img, (((x_s/2) + (x_s/10)),((y_s/10) * 3)), .3 * scale, "lvl_select", "N3", 3)
-N4_btn = Widget(N4_btn_img, (((x_s/2) - (x_s/10)),((y_s/10) * 5)), .3 * scale, "lvl_select", "N4", 4) # x pos - (x_s/2) +- (x_s/10)
-N5_btn = Widget(N5_btn_img, (((x_s/2))          ,((y_s/10) * 5)), .3 * scale, "lvl_select", "N5", 5)  # y pos - y_s/10 * 3/5/7
-N6_btn = Widget(N6_btn_img, (((x_s/2) + (x_s/10)),((y_s/10) * 5)), .3 * scale, "lvl_select", "N6", 6)
+N1_btn = Widget(N1_btn_img, (((x_s/2) - (x_s/10)),((y_s/10) * 3)), .3 * scale, "lvl_select", "N1", 1, biome = "plain") # x pos - (x_s/2) +- (x_s/10)
+N2_btn = Widget(N2_btn_img, (((x_s/2))          ,((y_s/10) * 3)), .3 * scale, "lvl_select", "N2", 2, biome = "plain")  # y pos - y_s/10 * 3/5/7
+N3_btn = Widget(N3_btn_img, (((x_s/2) + (x_s/10)),((y_s/10) * 3)), .3 * scale, "lvl_select", "N3", 3, biome = "plain")
+
+N4_btn = Widget(N4_btn_img, (((x_s/2) - (x_s/10)),((y_s/10) * 5)), .3 * scale, "lvl_select", "N4", 4, biome = "plain") # x pos - (x_s/2) +- (x_s/10)
+N5_btn = Widget(N5_btn_img, (((x_s/2))          ,((y_s/10) * 5)), .3 * scale, "lvl_select", "N5", 5, biome = "plain")  # y pos - y_s/10 * 3/5/7
+N6_btn = Widget(N6_btn_img, (((x_s/2) + (x_s/10)),((y_s/10) * 5)), .3 * scale, "lvl_select", "N6", 6, biome = "plain")
+
+N7_btn = Widget(N7_btn_img, (((x_s/2) - (x_s/10)),((y_s/10) * 7)), .3 * scale, "lvl_select", "N7", 7, biome = "plain")
+N8_btn = Widget(N8_btn_img, (((x_s/2))           ,((y_s/10) * 7)), .3 * scale, "lvl_select", "8", 8, biome = "plain")
+N9_btn = Widget(N9_btn_img, (((x_s/2) + (x_s/10)),((y_s/10) * 7)), .3 * scale, "lvl_select", "9", 9, biome = "plain")
+
+N10_btn = Widget(N10_btn_img, (((x_s/2))          ,((y_s/10) * 9)), .3 * scale, "lvl_select", "N10", 10, biome = "plain") # PLAIN BIOME
+
+N11_btn = Widget(N11_btn_img, (((x_s/2) - (x_s/10)),((y_s/10) * 3)), .3 * scale, "lvl_select", "N11", 11, biome = "sand")
 
 left_btn = Widget(left_btn_img,((x_s/5),y_s - (y_s/10)), .3 * scale, "lvl_select", "left")
 right_btn = Widget(right_btn_img,(x_s - (x_s/5),y_s - (y_s/10)), .3 * scale, "lvl_select", "right")
@@ -174,10 +188,12 @@ LVL_S = pygame.sprite.Group()
 PLAIN = pygame.sprite.Group()
 SAND = pygame.sprite.Group()
 BTNS = pygame.sprite.Group()
+
 LVL_S.add(back_btn, left_btn, right_btn)
-PLAIN.add(Plain_name, N1_btn, N2_btn, N3_btn, N4_btn, N5_btn, N6_btn)
-SAND.add(Sand_name)
-BTNS.add(back_btn, left_btn, right_btn, N1_btn, N2_btn, N3_btn, N4_btn, N5_btn, N6_btn)
+PLAIN.add(Plain_name, N1_btn, N2_btn, N3_btn, N4_btn, N5_btn, N6_btn, N7_btn, N8_btn, N9_btn, N10_btn)
+SAND.add(Sand_name, N11_btn)
+buttons = [N1_btn, N2_btn, N3_btn, N4_btn, N5_btn, N6_btn, N7_btn, N8_btn, N9_btn, N10_btn, N11_btn]
+BTNS.add(back_btn, left_btn, right_btn, N1_btn, N2_btn, N3_btn, N4_btn, N5_btn, N6_btn, N7_btn, N8_btn, N9_btn, N10_btn, N11_btn)
 
 
 ball_img = pygame.image.load(images_dir + "ball.png")
@@ -234,18 +250,23 @@ PAUSE.add(resume_btn, set_btn, exit_btn, pause)
 
 
 
-box_img = pygame.image.load(boxes_dir + "box.png")
-box_2_col_img = pygame.image.load(boxes_dir + "boxes_2_column.png")
-box_3_row_img = pygame.image.load(boxes_dir + "boxes_3_row.png")
-box_5_row_img = pygame.image.load(boxes_dir + "boxes_5_row.png")
+box_img = pygame.image.load(props_dir + "box.png")
+box_2_col_img = pygame.image.load(props_dir + "boxes_2_column.png")
+box_3_row_img = pygame.image.load(props_dir + "boxes_3_row.png")
+box_5_row_img = pygame.image.load(props_dir + "boxes_5_row.png")
 
-box = Box(box_img, (-50,-50), 2)
-box_2_col = Box(box_2_col_img, (-50,-50), 2)
-box_3_row = Box(box_3_row_img, (-50,-50), 2)
-box_5_row = Box(box_5_row_img, (-50,-50), 2)
+sand_prop_img = pygame.image.load(props_dir + "sand_prop.png")
 
-BOXES = pygame.sprite.Group()
+box = Prop(box_img, (-50,-50), 2, "box")
+box_2_col = Prop(box_2_col_img, (-50,-50), 2, "box")
+box_3_row = Prop(box_3_row_img, (-50,-50), 2, "box")
+box_5_row = Prop(box_5_row_img, (-50,-50), 2, "box")
 
-BOXES.add(box, box_2_col, box_5_row, box_3_row)
+sand_prop = Prop(sand_prop_img, (-50,-50), .2, "sand")
 
+PROPS = pygame.sprite.Group()
+SAND_PROP = pygame.sprite.Group()
+
+PROPS.add(box, box_2_col, box_5_row, box_3_row, sand_prop)
+SAND_PROP.add(sand_prop)
 

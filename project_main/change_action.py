@@ -1,4 +1,3 @@
-import pygame
 level_num = 0
 def ChangeAction(action, btn_class, biome, level = None, resize = False):
     global level_num
