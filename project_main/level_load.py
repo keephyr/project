@@ -1,53 +1,41 @@
-import pygame
-biom = 0
 def LevelLoad(level, screen, action, loading = False): 
-    from init_img import BALL, LEVEL, BOXES, INACTIVE,HOLE, ball, x_s, y_s, box, box_2_col, box_3_row, box_5_row
+    from init_img import BALL, LEVEL, PROPS, INACTIVE,HOLE, ball, x_s, y_s
+    import init_img as i
+
     if loading == True and action != "next_level":
         ball.rect.center = ((x_s/2), (y_s - y_s / 6))
         LEVEL.update()
         BALL.update()
         print("updated")
-        print("level - ", level)
-        for sprite in BOXES:
+        # print("level - ", level)
+        for sprite in PROPS:
             sprite.rect.center = (-500,-500)
+            PROPS.update()
         if level == 1:
-            print("level1")
+            i.sand_prop.rect.center = (100,100)
             pass
         if level == 2:
-            print("level2")
-            box.rect.center = (100,100)  
+            i.box.rect.center = (100,100)  
         if level == 3:
-            print("level3")
-            box_2_col.rect.center = (100,200)     
+            i.box_2_col.rect.center = (100,200)     
         if level == 4:
-            print("level4")
-            box_3_row.rect.center = (x_s //2,200)    
+            i.box_3_row.rect.center = (x_s // 2,200)    
         if level == 5:
-            print("level5")
-            box_5_row.rect.center = (x_s //2,200)   
+            i.box_5_row.rect.center = (x_s // 2,200)   
         if level == 6:
-            print("level6")
-            pass         
+            pass 
+             
         loading = False
-        BOXES.draw(screen)
+        PROPS.draw(screen)
     if action == "action":
+        PROPS.draw(screen)
         HOLE.draw(screen)
         BALL.draw(screen)
         INACTIVE.draw(screen)
-        BOXES.draw(screen)
-    elif level == 1:
+    PROPS.draw(screen)
+    if type(level) == int:
         LEVEL.draw(screen)
-    elif level == 2:
-        LEVEL.draw(screen)
-    elif level == 3:
-        LEVEL.draw(screen)
-    elif level == 4:
-        LEVEL.draw(screen)
-    elif level == 5:
-        LEVEL.draw(screen)
-    elif level == 6:
-        LEVEL.draw(screen)
-    BOXES.draw(screen)
+
     if action == "level" and loading == True:
         return True, level
     else:
