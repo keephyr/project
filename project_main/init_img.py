@@ -129,6 +129,7 @@ START.add(start_btn, set_btn, exit_btn, Name)
 bg_plain_img = pygame.image.load(images_dir + "Background/bg_plain.png") # Background
 bg_sand_img = pygame.image.load(images_dir + "Background/bg_sand.png")
 bg_toner_img = pygame.image.load(images_dir + "Background/bg_toner.png")
+bg_ice_img = pygame.image.load(images_dir + "Background/bg_ice.png")
 
 bg_img = bg_plain_img
 # bg = Background(bg_sand_img)
@@ -156,6 +157,7 @@ N11_btn_img = pygame.image.load(level_btn_dir + "N11_notclicked.png")
 
 Plain_img = pygame.image.load(text_dir + "Plain.png")
 Sand_img = pygame.image.load(text_dir + "Sand.png")
+Ice_img = pygame.image.load(text_dir + "Ice.png")
 
 left_btn_img = pygame.image.load(level_btn_dir + "left_notclicked.png")
 right_btn_img = pygame.image.load(level_btn_dir + "right_notclicked.png")
@@ -183,15 +185,19 @@ right_btn = Widget(right_btn_img,(x_s - (x_s/5),y_s - (y_s/10)), .3 * scale, "lv
 
 Plain_name = Widget(Plain_img,(((x_s/2)),(y_s/10)), .9 * scale, "lvl_select", "name")
 Sand_name = Widget(Sand_img,(((x_s/2)),(y_s/10)), .9 * scale, "lvl_select", "name")
+Ice_name = Widget(Ice_img,(((x_s/2)),(y_s/10)), .9 * scale, "lvl_select", "name")
 
 LVL_S = pygame.sprite.Group()
 PLAIN = pygame.sprite.Group()
 SAND = pygame.sprite.Group()
+ICE = pygame.sprite.Group()
 BTNS = pygame.sprite.Group()
 
 LVL_S.add(back_btn, left_btn, right_btn)
 PLAIN.add(Plain_name, N1_btn, N2_btn, N3_btn, N4_btn, N5_btn, N6_btn, N7_btn, N8_btn, N9_btn, N10_btn)
 SAND.add(Sand_name, N11_btn)
+ICE.add(Ice_name)
+
 buttons = [N1_btn, N2_btn, N3_btn, N4_btn, N5_btn, N6_btn, N7_btn, N8_btn, N9_btn, N10_btn, N11_btn]
 BTNS.add(back_btn, left_btn, right_btn, N1_btn, N2_btn, N3_btn, N4_btn, N5_btn, N6_btn, N7_btn, N8_btn, N9_btn, N10_btn, N11_btn)
 
@@ -256,17 +262,21 @@ box_3_row_img = pygame.image.load(props_dir + "boxes_3_row.png")
 box_5_row_img = pygame.image.load(props_dir + "boxes_5_row.png")
 
 sand_prop_img = pygame.image.load(props_dir + "sand_prop.png")
+ice_prop_img = pygame.image.load(props_dir + "ice_prop.png")
 
 box = Prop(box_img, (-50,-50), 2, "box")
 box_2_col = Prop(box_2_col_img, (-50,-50), 2, "box")
 box_3_row = Prop(box_3_row_img, (-50,-50), 2, "box")
 box_5_row = Prop(box_5_row_img, (-50,-50), 2, "box")
 
-sand_prop = Prop(sand_prop_img, (-50,-50), .2, "sand")
+sand_prop = Prop(sand_prop_img, (-50,-50), .4, "sand")
+ice_prop = Prop(ice_prop_img, (-50,-50), .4, "ice")
 
 PROPS = pygame.sprite.Group()
 SAND_PROP = pygame.sprite.Group()
+ICE_PROP = pygame.sprite.Group()
 
-PROPS.add(box, box_2_col, box_5_row, box_3_row, sand_prop)
+PROPS.add(box, box_2_col, box_5_row, box_3_row, sand_prop, ice_prop)
 SAND_PROP.add(sand_prop)
+ICE_PROP.add(ice_prop)
 

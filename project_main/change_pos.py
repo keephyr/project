@@ -16,7 +16,7 @@ def Change_btn_pos(biome):
                 buttons[8].rect.center = ((x_s/2) + (x_s/10)),((y_s/10) * 7)
                 
                 buttons[9].rect.center = ((x_s/2)),((y_s/10) * 9)
-            elif biome == 1:
+            elif biome != 0:
                 button.rect.center = (-500, 500)
         elif button.biome == "sand":
             if biome == 1:
@@ -33,7 +33,25 @@ def Change_btn_pos(biome):
                 # buttons[18].rect.center = ((x_s/2) + (x_s/10)),((y_s/10) * 7)
                 
                 # buttons[19].rect.center = ((x_s/2)),((y_s/10) * 9)
-            elif biome == 0:
+            elif biome != 1:
+                button.rect.center = (-500, 500)
+        elif button.biome == "ice":
+            if biome == 2:
+                # buttons[20].rect.center = ((x_s/2) - (x_s/10)),((y_s/10) * 3)
+                # buttons[21].rect.center = ((x_s/2)),((y_s/10) * 3)
+                # buttons[22].rect.center = ((x_s/2) + (x_s/10)),((y_s/10) * 3)
+
+                # buttons[23].rect.center = ((x_s/2)),((y_s/10) * 5)
+                # buttons[24].rect.center = ((x_s/2) - (x_s/10)),((y_s/10) * 5)
+                # buttons[25].rect.center = ((x_s/2) + (x_s/10)),((y_s/10) * 5)
+
+                # buttons[26].rect.center = ((x_s/2)),((y_s/10) * 7)
+                # buttons[27].rect.center = ((x_s/2) - (x_s/10)),((y_s/10) * 7)
+                # buttons[28].rect.center = ((x_s/2) + (x_s/10)),((y_s/10) * 7)
+                
+                # buttons[29].rect.center = ((x_s/2)),((y_s/10) * 9)
+                pass
+            elif biome != 2:
                 button.rect.center = (-500, 500)
     PLAIN.update()
     SAND.update()

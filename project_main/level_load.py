@@ -24,7 +24,9 @@ def LevelLoad(level, screen, action, loading = False):
             i.box_5_row.rect.center = (x_s // 2,200)   
         if level == 6:
             pass 
-             
+        if level == 11:
+            i.sand_prop.rect.center = (100,100)
+            i.ice_prop.rect.center = (x_s - 100, 100)
         loading = False
         PROPS.draw(screen)
     if action == "action":

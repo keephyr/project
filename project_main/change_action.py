@@ -25,7 +25,7 @@ def ChangeAction(action, btn_class, biome, level = None, resize = False):
             else:
                 biome -= 1
         elif btn_class == "right":
-            if biome == 1:
+            if biome == 2:
                 pass
             else:
                 biome += 1

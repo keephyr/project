@@ -53,6 +53,9 @@ def Draw(action, clicked, run):
         elif biome == 1:
             ii.bg_img = ii.bg_sand_img
             ii.SAND.draw(screen)
+        elif biome == 2:
+            ii.bg_img = ii.bg_ice_img
+            ii.ICE.draw(screen)
         loading = True
         for button in ii.BTNS:
             level, action, clicked, resize, biome = button.draw_clicked(action, clicked, biome, level_num)

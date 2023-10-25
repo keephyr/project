@@ -43,18 +43,22 @@ def go(velx, vely, position, ball, Ball):
                                 y_vel = -abs(y_vel)
                                 vely = -abs(vely)
                                 position[1] = round(position[1] + round((y_vel * number) / 20, 3), 1)
-                elif box.prop_class == "sand":
+                elif box.prop_class != "box":
                     position[0] = round(position[0] + round((x_vel * number) / 20, 3), 1)
                     position[1] = round(position[1] + round((y_vel * number) / 20, 3), 1)
-                    number = number - 0.05
-                    if number < 0:
-                        number = 0
-                    number = round(number,2)
-                if box.prop_class != "sand":
-                    position[0] = round(position[0] + round((x_vel * number) / 20, 3), 1)
-                    position[1] = round(position[1] + round((y_vel * number) / 20, 3), 1)
-                    number = number - 0.02
-                    number = round(number,2)
+                    if box.prop_class == "sand":
+                        number = number - 0.05
+                        if number < 0:
+                            number = 0
+                        number = round(number,2)
+                    elif box.prop_class == "ice":
+                        number = number - 0.01
+                        if number < 0:
+                            number = 0
+                        number = round(number,2)
+                    if box.prop_class != "sand" and box.prop_class != "ice":
+                        number = number - 0.03
+                        number = round(number,2)
         else:
             position[0] = round(position[0] + round((x_vel * number) / 20, 3), 1)
             position[1] = round(position[1] + round((y_vel * number) / 20, 3), 1)
