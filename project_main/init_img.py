@@ -127,9 +127,12 @@ START.add(start_btn, set_btn, exit_btn, Name)
 
 
 bg_plain_img = pygame.image.load(images_dir + "Background/bg_plain.png") # Background
+bg_plain_img = pygame.transform.scale(bg_plain_img, (1000 * (1 + scale), 1000 * (1 + scale)))
 bg_sand_img = pygame.image.load(images_dir + "Background/bg_sand.png")
+bg_sand_img = pygame.transform.scale(bg_sand_img, (1000 * (1 + scale), 1000 * (1 + scale)))
 bg_toner_img = pygame.image.load(images_dir + "Background/bg_toner.png")
 bg_ice_img = pygame.image.load(images_dir + "Background/bg_ice.png")
+bg_ice_img = pygame.transform.scale(bg_ice_img, (1000 * (1 + scale), 1000 * (1 + scale)))
 
 bg_img = bg_plain_img
 # bg = Background(bg_sand_img)
@@ -264,7 +267,7 @@ box_5_row_img = pygame.image.load(props_dir + "boxes_5_row.png")
 sand_prop_img = pygame.image.load(props_dir + "sand_prop.png")
 ice_prop_img = pygame.image.load(props_dir + "ice_prop.png")
 
-box = Prop(box_img, (-50,-50), 2, "box")
+box1=box2=box3=box4=box5=box6=box7=box8= Prop(box_img, (-50,-50), 4, "box")
 box_2_col = Prop(box_2_col_img, (-50,-50), 2, "box")
 box_3_row = Prop(box_3_row_img, (-50,-50), 2, "box")
 box_5_row = Prop(box_5_row_img, (-50,-50), 2, "box")
@@ -275,8 +278,12 @@ ice_prop = Prop(ice_prop_img, (-50,-50), .4, "ice")
 PROPS = pygame.sprite.Group()
 SAND_PROP = pygame.sprite.Group()
 ICE_PROP = pygame.sprite.Group()
-
-PROPS.add(box, box_2_col, box_5_row, box_3_row, sand_prop, ice_prop)
+box_array = [box1,box2,box3,box4,box5,box6,box7,box8]
+PROPS.add(box1,box2,box3,box4,box5,box6,box7,box8, box_2_col, box_5_row, box_3_row, sand_prop, ice_prop)
 SAND_PROP.add(sand_prop)
 ICE_PROP.add(ice_prop)
 
+map1 = [[0,1,0,0,0,0,0,0],
+       [1,0,1,0,0,0,0,0],
+       [0,1,0,0,0,0,0,0],
+       [1,0,1,0,0,0,0,0]]

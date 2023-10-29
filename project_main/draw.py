@@ -7,7 +7,7 @@ from level_load import LevelLoad
 from change_pos import Change_btn_pos
 
 pygame.init()
-main_screen = pygame.display.set_mode((960,540))
+main_screen = pygame.display.set_mode((1200,720))
 screen = main_screen.copy()
 resize = True
 scale = 1

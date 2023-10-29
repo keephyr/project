@@ -1,3 +1,5 @@
+from draw_props import Set_Pos
+
 def LevelLoad(level, screen, action, loading = False): 
     from init_img import BALL, LEVEL, PROPS, INACTIVE,HOLE, ball, x_s, y_s
     import init_img as i
@@ -12,10 +14,10 @@ def LevelLoad(level, screen, action, loading = False):
             sprite.rect.center = (-500,-500)
             PROPS.update()
         if level == 1:
-            i.sand_prop.rect.center = (100,100)
+            Set_Pos(i.map1, PROPS)
             pass
         if level == 2:
-            i.box.rect.center = (100,100)  
+            i.box1.rect.center = (100,100)  
         if level == 3:
             i.box_2_col.rect.center = (100,200)     
         if level == 4:
