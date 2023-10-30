@@ -4,7 +4,7 @@ def LevelLoad(level, screen, action, loading = False):
     from init_img import BALL, LEVEL, PROPS, INACTIVE,HOLE, ball, x_s, y_s
     import init_img as i
 
-    if loading == True and action != "next_level":
+    if loading == True and action != "next_level" and action != "restart":
         ball.rect.center = ((x_s/2), (y_s - y_s / 6))
         LEVEL.update()
         BALL.update()
@@ -14,18 +14,25 @@ def LevelLoad(level, screen, action, loading = False):
             sprite.rect.center = (-500,-500)
             PROPS.update()
         if level == 1:
-            Set_Pos(i.map1, PROPS)
             pass
         if level == 2:
-            i.box1.rect.center = (100,100)  
+            Set_Pos(i.map2, PROPS)
         if level == 3:
-            i.box_2_col.rect.center = (100,200)     
+            Set_Pos(i.map3, PROPS)  
         if level == 4:
-            i.box_3_row.rect.center = (x_s // 2,200)    
+            Set_Pos(i.map4, PROPS)  
         if level == 5:
-            i.box_5_row.rect.center = (x_s // 2,200)   
+            Set_Pos(i.map5, PROPS)
         if level == 6:
-            pass 
+            Set_Pos(i.map6, PROPS)
+        if level == 7:
+            Set_Pos(i.map7, PROPS)
+        if level == 8:
+            Set_Pos(i.map8, PROPS)
+        if level == 9:
+            Set_Pos(i.map9, PROPS)
+        if level == 10:
+            Set_Pos(i.map10, PROPS)
         if level == 11:
             i.sand_prop.rect.center = (100,100)
             i.ice_prop.rect.center = (x_s - 100, 100)
@@ -39,7 +46,6 @@ def LevelLoad(level, screen, action, loading = False):
     PROPS.draw(screen)
     if type(level) == int:
         LEVEL.draw(screen)
-
     if action == "level" and loading == True:
         return True, level
     else:

@@ -7,7 +7,7 @@ from level_load import LevelLoad
 from change_pos import Change_btn_pos
 
 pygame.init()
-main_screen = pygame.display.set_mode((1200,720))
+main_screen = pygame.display.set_mode((1200,800))
 screen = main_screen.copy()
 resize = True
 scale = 1
@@ -75,7 +75,7 @@ def Draw(action, clicked, run):
                 break
             else:
                 if img.img_class == "ball":
-                    goal = img.move()
+                    goal, lost, ball_position = img.move()
                     if goal == True:
                         loading = True
                         while num < 20:
@@ -83,14 +83,32 @@ def Draw(action, clicked, run):
                             screen.blit(ii.bg_img, (0,0))
                             LevelLoad(level_num, screen, "action")
                             anim_image = pygame.image.load(ii.goal_frames + f"pixil-frame-{num}.png")
-                            anim_image = ii.Widget(anim_image, ((ii.x_s/2), (ii.y_s/6)), .4 * ii.scale, "level", "hole")
+                            anim_image = ii.Widget(anim_image, ii.hole.rect.center, .4 * ii.scale, "level", "hole")
                             ii.ANIM_FRAMES.add(anim_image)
                             ii.ANIM_FRAMES.draw(screen)
+                            anim_image.kill()
                             num = num + 1
                             anim_image = {}
                             pygame.display.flip()
                         clock.tick(60)
                         action = "next_level"
+                    elif lost == True:
+                        loading = True
+                        while num < 12:
+                            clock.tick(20)
+                            screen.blit(ii.bg_img, (0,0))
+                            ii.PROPS.draw(screen)
+                            LevelLoad(level_num, screen, "action")
+                            anim_image = pygame.image.load(ii.splash_frames + f"pixil-frame-{num}.png")
+                            anim_image = ii.Widget(anim_image, ball_position, 4 * ii.scale, "level", "hole")
+                            ii.ANIM_FRAMES.add(anim_image)
+                            ii.ANIM_FRAMES.draw(screen)
+                            anim_image.kill()
+                            num = num + 1
+                            anim_image = {}
+                            pygame.display.flip()
+                        clock.tick(60)
+                        action = "restart"
     elif action == "pause":
         screen.blit(ii.bg_img, (0,0))
         ii.BG.draw(screen)
@@ -107,6 +125,16 @@ def Draw(action, clicked, run):
             level, action, clicked, resize, biome = button.draw_clicked(action, clicked, biome, level_num)
             if action != "next_level":
                 level_num = level_num + 1
+                loading, level_num = LevelLoad(level_num, screen, action, loading)
+                break
+    elif action == "restart":
+        screen.blit(ii.bg_img, (0,0))
+        loading, level_num = LevelLoad(level_num, screen, action, loading)
+        ii.RESTART_BUTTONS.draw(screen)
+        for button in ii.RESTART_BUTTONS:
+            level, action, clicked, resize, biome = button.draw_clicked(action, clicked, biome, level_num)
+            if action != "restart":
+                level_num = level_num
                 loading, level_num = LevelLoad(level_num, screen, action, loading)
                 break
     elif action == "exit":

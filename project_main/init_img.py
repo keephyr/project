@@ -42,9 +42,11 @@ class Widget(pygame.sprite.Sprite):
         self.rect.center = position
         self.position = position
 
-    def draw_clicked(self,action, clicked,biome_num,level_num = None, resize = False):
+    def draw_clicked(self,action, clicked, biome_num, level_num = None, resize = False):
         pos = pygame.mouse.get_pos()
-        if self.rect.collidepoint(pos):
+        if self.img_class == "ball" or self.img_class == "hole":
+            pass
+        elif self.rect.collidepoint(pos):
             if pygame.mouse.get_pressed()[0] == True and clicked == False:
                 clicked = True
                 if self.img_class != "name":
@@ -75,8 +77,8 @@ class Widget(pygame.sprite.Sprite):
         return self.level_num, action, clicked, resize, biome_num
     
     def move(self):
-        goal = go.clicked_func(self, Widget)
-        return goal
+        goal, lost, ball_position = go.clicked_func(self)
+        return goal, lost, ball_position
 
     def Resize(self, scale):
         self.new_size = (self.size[0] * scale, self.size[1] * scale)      
@@ -105,6 +107,7 @@ buttons_dir = path.join(path.dirname(__file__), 'img/Buttons/')
 level_btn_dir = path.join(path.dirname(__file__), "img/Buttons/levels_buttons/")
 text_dir = path.join(path.dirname(__file__), "img/Text/")
 goal_frames = path.join(path.dirname(__file__), "img/Goal_anim/")
+splash_frames = path.join(path.dirname(__file__), "img/Splash_anim/")
 props_dir = path.join(path.dirname(__file__), 'img/Props/')
 
 ANIM_FRAMES = pygame.sprite.Group()
@@ -212,6 +215,8 @@ hole_img = pygame.image.load(images_dir + "hole.png")
 
 next_level_img = pygame.image.load(level_btn_dir + "next_notclicked.png")
 level_passed_img = pygame.image.load(text_dir + "level_passed.png")
+level_lost_img = pygame.image.load(text_dir + "restart.png")
+restart_button_img = pygame.image.load(level_btn_dir + "restart_notclicked.png")
 
 ball = Widget(ball_img, ((x_s/2), (y_s - y_s / 6)), .2 * scale, "level", "ball")
 pause_btn = Widget(pause_btn_img, ((y_s/15),(y_s/15)), .25 * scale, "lvl_select", "pause")
@@ -221,16 +226,21 @@ hole = Widget(hole_img, ((x_s/2), (y_s/6)), .4 * scale, "level", "hole")
 level_passed = Widget(level_passed_img, ((x_s/2),(y_s/7)), 1.2 * scale, "main", "name")
 next_level = Widget(next_level_img, ((x_s/2),((y_s/10) * 8)), .3 * scale, "lvl_select", "next")
 
+level_lost = Widget(level_lost_img, ((x_s/2),(y_s/7)), 1.2 * scale, "main", "name")
+restart_level = Widget(restart_button_img, ((x_s/2),((y_s/10) * 8)), .3 * scale, "lvl_select", "restart")
+
 LEVEL = pygame.sprite.Group()
 BALL = pygame.sprite.Group()
 HOLE = pygame.sprite.Group()
 INACTIVE = pygame.sprite.Group()
 LEVEL_BUTTONS = pygame.sprite.Group()
+RESTART_BUTTONS = pygame.sprite.Group()
 
 HOLE.add(hole)
 BALL.add(ball)
 LEVEL.add(hole, ball, pause_btn)
 LEVEL_BUTTONS.add(pause_btn, next_level, level_passed)
+RESTART_BUTTONS.add(pause_btn, restart_level, level_lost)
 INACTIVE.add(pause_inactve)
 
 
@@ -260,17 +270,31 @@ PAUSE.add(resume_btn, set_btn, exit_btn, pause)
 
 
 box_img = pygame.image.load(props_dir + "box.png")
-box_2_col_img = pygame.image.load(props_dir + "boxes_2_column.png")
-box_3_row_img = pygame.image.load(props_dir + "boxes_3_row.png")
-box_5_row_img = pygame.image.load(props_dir + "boxes_5_row.png")
+water_img = pygame.image.load(props_dir + "water.png")
 
 sand_prop_img = pygame.image.load(props_dir + "sand_prop.png")
 ice_prop_img = pygame.image.load(props_dir + "ice_prop.png")
 
-box1=box2=box3=box4=box5=box6=box7=box8= Prop(box_img, (-50,-50), 4, "box")
-box_2_col = Prop(box_2_col_img, (-50,-50), 2, "box")
-box_3_row = Prop(box_3_row_img, (-50,-50), 2, "box")
-box_5_row = Prop(box_5_row_img, (-50,-50), 2, "box")
+box1=Prop(box_img, (-50,-50), 4, "box")
+box2=Prop(box_img, (-50,-50), 4, "box")
+box3=Prop(box_img, (-50,-50), 4, "box")
+box4=Prop(box_img, (-50,-50), 4, "box")
+box5=Prop(box_img, (-50,-50), 4, "box")
+box6=Prop(box_img, (-50,-50), 4, "box")
+box7=Prop(box_img, (-50,-50), 4, "box")
+box8=Prop(box_img, (-50,-50), 4, "box")
+box9=Prop(box_img, (-50,-50), 4, "box")
+box10=Prop(box_img, (-50,-50), 4, "box")
+box11=Prop(box_img, (-50,-50), 4, "box")
+box12=Prop(box_img, (-50,-50), 4, "box")
+box13=Prop(box_img, (-50,-50), 4, "box")
+box14=Prop(box_img, (-50,-50), 4, "box")
+box15=Prop(box_img, (-50,-50), 4, "box")
+box16=Prop(box_img, (-50,-50), 4, "box")
+box17=Prop(box_img, (-50,-50), 4, "box")
+box18=Prop(box_img, (-50,-50), 4, "box")
+
+water1=Prop(water_img, (-50,-50), 4, "water")
 
 sand_prop = Prop(sand_prop_img, (-50,-50), .4, "sand")
 ice_prop = Prop(ice_prop_img, (-50,-50), .4, "ice")
@@ -278,12 +302,113 @@ ice_prop = Prop(ice_prop_img, (-50,-50), .4, "ice")
 PROPS = pygame.sprite.Group()
 SAND_PROP = pygame.sprite.Group()
 ICE_PROP = pygame.sprite.Group()
-box_array = [box1,box2,box3,box4,box5,box6,box7,box8]
-PROPS.add(box1,box2,box3,box4,box5,box6,box7,box8, box_2_col, box_5_row, box_3_row, sand_prop, ice_prop)
+WATER = pygame.sprite.Group()
+
+water_array = [water1]
+box_array = [box1,box2,box3,box4,box5,box6,box7,box8,box9,box10,box11,box12,box13,box14,box15,box16,box17,box18]
+
+
+WATER.add (water_array)
+PROPS.add(box_array,water_array,sand_prop,ice_prop)
 SAND_PROP.add(sand_prop)
 ICE_PROP.add(ice_prop)
 
-map1 = [[0,1,0,0,0,0,0,0],
-       [1,0,1,0,0,0,0,0],
-       [0,1,0,0,0,0,0,0],
-       [1,0,1,0,0,0,0,0]]
+map2 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,1,1,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,2,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+
+map3 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,1,1,1,1,1,1,1,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+
+map4 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,1,1,1,1,0,0,0,0,0,1,1,1,1,0],
+        [0,0,0,0,0,0,1,1,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,1,0,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+
+map5 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,1,0,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,1,1,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,1,1,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,1,0,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+
+map6 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,1,1,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+
+map7 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,1,1,1,1,1,1,1,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+
+map8 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,1,1,1,1,0,0,0,0,0,1,1,1,1,0],
+        [0,0,0,0,0,0,1,1,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,1,0,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+
+map9 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,1,0,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,1,1,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,1,1,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,1,0,1,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+
+map10 = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+         [0,0,0,0,0,0,1,0,1,0,0,0,0,0,0],
+         [0,0,0,0,0,0,1,1,1,0,0,0,0,0,0],
+         [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+         [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+         [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+         [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+         [0,0,0,0,0,0,1,1,1,0,0,0,0,0,0],
+         [0,0,0,0,0,0,1,0,1,0,0,0,0,0,0],
+         [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+

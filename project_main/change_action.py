@@ -58,5 +58,12 @@ def ChangeAction(action, btn_class, biome, level = None, resize = False):
         elif btn_class == "next":
             level += 1
             action = "level" 
+
+    elif action == "restart":
+        if btn_class == "pause":
+            action = "pause"
+        elif btn_class == "restart":
+            level += 0
+            action = "level"
         
     return level_num, action, resize, biome
