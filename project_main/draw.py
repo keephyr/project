@@ -11,6 +11,7 @@ main_screen = pygame.display.set_mode((1200,800))
 screen = main_screen.copy()
 resize = True
 scale = 1
+hit = 0
 level_num = None
 loading = False
 screen_x, screen_y = GetScreenSize()
@@ -19,7 +20,7 @@ pygame.display.set_caption("Golf")
 clock = pygame.time.Clock()
 
 def Draw(action, clicked, run):
-    global resize, main_screen, screen, scale, screen_x, screen_y, clock, level_num, loading, biome
+    global resize, main_screen, screen, scale, screen_x, screen_y, clock, level_num, loading, biome, hit
     if resize == True:
         x_s = screen_x * scale
         y_s = screen_y * scale
@@ -63,11 +64,13 @@ def Draw(action, clicked, run):
                 level_num = level
             if action != "lvl_select":
                 if action == "level":
-                    loading, level_num = LevelLoad(level_num, screen, action, loading = loading) 
+                    loading, level_num, hit = LevelLoad(level_num, screen, action, hit, loading = loading) 
                 break              
     elif action == "level":
         screen.blit(ii.bg_img, (0,0))
-        loading, level_num = LevelLoad(level_num, screen, action)
+        loading, level_num, hit = LevelLoad(level_num, screen, action,hit)
+        text_surface = ii.my_font.render(f"Your score: {hit}", False, (0, 0, 0))
+        screen.blit(text_surface, (200, 300))
         num = 0
         for img in ii.LEVEL:
             level, action, clicked, resize, biome = img.draw_clicked(action, clicked, biome, level_num)                   
@@ -75,13 +78,13 @@ def Draw(action, clicked, run):
                 break
             else:
                 if img.img_class == "ball":
-                    goal, lost, ball_position = img.move()
+                    goal, lost, ball_position, hit = img.move(hit)
                     if goal == True:
                         loading = True
                         while num < 20:
                             clock.tick(20)
                             screen.blit(ii.bg_img, (0,0))
-                            LevelLoad(level_num, screen, "action")
+                            LevelLoad(level_num, screen, "action",hit)
                             anim_image = pygame.image.load(ii.goal_frames + f"pixil-frame-{num}.png")
                             anim_image = ii.Widget(anim_image, ii.hole.rect.center, .4 * ii.scale, "level", "hole")
                             ii.ANIM_FRAMES.add(anim_image)
@@ -98,7 +101,7 @@ def Draw(action, clicked, run):
                             clock.tick(20)
                             screen.blit(ii.bg_img, (0,0))
                             ii.PROPS.draw(screen)
-                            LevelLoad(level_num, screen, "action")
+                            LevelLoad(level_num, screen, "action",hit)
                             anim_image = pygame.image.load(ii.splash_frames + f"pixil-frame-{num}.png")
                             anim_image = ii.Widget(anim_image, ball_position, 4 * ii.scale, "level", "hole")
                             ii.ANIM_FRAMES.add(anim_image)
@@ -119,23 +122,23 @@ def Draw(action, clicked, run):
                 break
     elif action == "next_level":
         screen.blit(ii.bg_img, (0,0))
-        loading, level_num = LevelLoad(level_num, screen, action, loading)
+        loading, level_num, hit = LevelLoad(level_num, screen, action,hit, loading)
         ii.LEVEL_BUTTONS.draw(screen)
         for button in ii.LEVEL_BUTTONS:
             level, action, clicked, resize, biome = button.draw_clicked(action, clicked, biome, level_num)
             if action != "next_level":
                 level_num = level_num + 1
-                loading, level_num = LevelLoad(level_num, screen, action, loading)
+                loading, level_num, hit = LevelLoad(level_num, screen, action,hit, loading)
                 break
     elif action == "restart":
         screen.blit(ii.bg_img, (0,0))
-        loading, level_num = LevelLoad(level_num, screen, action, loading)
+        loading, level_num, hit = LevelLoad(level_num, screen, action,hit, loading)
         ii.RESTART_BUTTONS.draw(screen)
         for button in ii.RESTART_BUTTONS:
             level, action, clicked, resize, biome = button.draw_clicked(action, clicked, biome, level_num)
             if action != "restart":
                 level_num = level_num
-                loading, level_num = LevelLoad(level_num, screen, action, loading)
+                loading, level_num, hit = LevelLoad(level_num, screen, action,hit, loading)
                 break
     elif action == "exit":
         run = False

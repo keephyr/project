@@ -6,10 +6,10 @@ clicked = False
 pos1 = None
 pos2 = None
 
-def go(velx, vely, position, ball):
+def go(velx, vely, position, ball, hit_num):
     from level_load import LevelLoad
     from draw import screen, main_screen, level_num, screen
-    from init_img import bg_img, BALL, HOLE, INACTIVE, PROPS, WATER
+    from init_img import bg_img, BALL, HOLE, INACTIVE, PROPS, WATER,text_surface
     x_s, y_s = GetScreenSize()
     x_vel = 1
     y_vel = 1
@@ -99,33 +99,35 @@ def go(velx, vely, position, ball):
             BALL.draw(screen)
             PROPS.draw(screen)
             INACTIVE.draw(screen)
+            screen.blit(text_surface, (200, 300))
             pygame.display.flip()
             break
         screen.blit(bg_img, (0,0))
         BALL.update()
-        LevelLoad(level_num, screen, "action")
+        LevelLoad(level_num, screen,"action",hit_num)
         main_screen.blit(pygame.transform.scale(screen, main_screen.get_rect().size), (0, 0))
         pygame.display.flip()
 
     return goal, lost, ball_position
 
-def clicked_func(ball):
+def clicked_func(ball, hit):
     global clicked, pos1, pos2
     if pygame.mouse.get_pressed()[0] == True and clicked == False:
         clicked = True
         pos1 = pygame.mouse.get_pos()
-        return False, False, 0
+        return False, False, 0, hit
     elif pygame.mouse.get_pressed()[0] == False and clicked == True:
         clicked = False
         pos2 = pygame.mouse.get_pos()
-        goal, lost, ball_position = vel(pos1, pos2, ball)
-        return goal, lost, ball_position
+        goal, lost, ball_position, hit = vel(pos1, pos2, ball,hit)
+        return goal, lost, ball_position, hit
     else:
-        return False, False, 0
+        return False, False, 0, hit
 
-def vel(pos1, pos2, ball):
+def vel(pos1, pos2, ball, hit):
     velx = pos1[0] - pos2[0]
     vely = pos1[1] - pos2[1]
     position = list(ball.rect.center)
-    goal, lost, ball_position = go(velx, vely, position,ball)
-    return goal, lost, ball_position
+    hit += 1
+    goal, lost, ball_position = go(velx, vely, position,ball, hit)
+    return goal, lost, ball_position, hit
